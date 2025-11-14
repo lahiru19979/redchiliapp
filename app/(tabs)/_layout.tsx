@@ -1,35 +1,39 @@
+// import { Tabs } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+// Reusable Tab Bar Icon component
+function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
+  return <FontAwesome size={22} style={{ marginBottom: -3 }} {...props} />;
+}
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    // The Tabs component replaces Stack here, creating the bottom bar
+    <Tabs screenOptions={{ 
+        tabBarActiveTintColor: 'blue', 
+        headerShown: false // Hide the header by default, or set it per screen
+    }}>
+      
+      {/* Route: / */}
       <Tabs.Screen
-        name="index"
+        name="index" // Corresponds to app/(tabs)/index.tsx
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
+      
+      {/* Route: /profile */}
       <Tabs.Screen
-        name="explore"
+        name="profile" // Corresponds to app/(tabs)/profile.tsx
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
+      
     </Tabs>
   );
 }
