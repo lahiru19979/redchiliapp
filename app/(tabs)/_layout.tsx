@@ -26,11 +26,19 @@ export default function TabsLayout() {
       />
       
       {/* Route: /profile */}
+      
+       <Tabs.Screen
+        name="Invoice" // Corresponds to app/(tabs)/profile.tsx
+        options={{
+          title: 'Invoice',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="profile" // Corresponds to app/(tabs)/profile.tsx
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="document-text" color={color} />,
         }}
       />
       
