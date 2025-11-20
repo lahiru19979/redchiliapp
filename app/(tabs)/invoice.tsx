@@ -12,18 +12,28 @@ import {
 
 
 import InvoiceItem, { Invoice } from '../../src/components/InvoiceItem';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { router } from 'expo-router';
+
 
 
 const API_BASE_URL = 'https://redchilli.lk/api';     // ← your real base URL
 const INVOICES_ENDPOINT = '/invoices';               // invoices endpoint
 const AUTH_TOKEN = 'YOUR_AUTH_TOKEN_IF_NEEDED';      // if your API needs auth
 
-export default function App() {
-    const [invoices, setInvoices] = useState([]);
+type RootStackParamList = {
+    InvoiceList: undefined; // The current screen
+    NewInvoice: undefined;  // The target screen when adding a new invoice
+    // Add other screens here, e.g., InvoiceDetails: { id: number }
+};
+type InvoiceListProps = NativeStackScreenProps<RootStackParamList, 'InvoiceList'>;
+
+export default function App({ navigation }: InvoiceListProps) {
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [searchKey, setSearchKey] = useState('');
     const [currentSearchInput, setCurrentSearchInput] = useState('');
 
@@ -72,7 +82,13 @@ export default function App() {
 
         } catch (err) {
             console.error('API fetch error:', err);
-            setError(err.message);
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : typeof err === 'string'
+                        ? err
+                        : 'An unexpected error occurred';
+            setError(message);
         } finally {
             setLoading(false);
         }
@@ -97,12 +113,18 @@ export default function App() {
             fetchInvoices(page + 1);
         }
     };
+  const handleAddNewInvoice = () => {
+    router.push('/new-invoice');   // Navigate to new invoice page
+};
 
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.header}>Invoice List</Text>
 
             <View style={styles.searchRow}>
+               <TouchableOpacity style={styles.newInvoiceBtn} onPress={handleAddNewInvoice}>
+                    <Text style={styles.newInvoiceText}>+ Add New Invoice</Text>
+                </TouchableOpacity>
                 <TextInput
                     value={currentSearchInput}
                     onChangeText={setCurrentSearchInput}
@@ -153,4 +175,18 @@ const styles = StyleSheet.create({
     errorBox: { padding: 20, backgroundColor: '#FEE2E2', borderRadius: 10, marginVertical: 20 },
     errorText: { color: '#B91C1C', fontSize: 16, marginBottom: 10 },
     retryBtn: { color: '#1D4ED8', fontWeight: '700' },
+    newInvoiceBtn: {
+        backgroundColor: '#059669', // Deep Green
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        marginRight: 8,
+        height: 40, // Uniform height
+        justifyContent: 'center',
+    },
+    newInvoiceText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
 });
