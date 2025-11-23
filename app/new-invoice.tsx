@@ -26,12 +26,13 @@ export default function NewInvoice() {
   const [openPhone, setOpenPhone] = useState(false);
   const [customerPhone, setCustomerPhone] = useState<string | null>(null);
   const [customerList, setCustomerList] = useState<
-    { label: string; value: string; name: string; name_address: string }[]
+    { label: string; value: string; name: string; name_address: string; cus_id: string }[]
   >([]);
 
   // customer name auto-filled
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
+   const [cus_id, setcusid] = useState("");
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scannerOpen, setScannerOpen] = useState(false);
@@ -60,11 +61,12 @@ export default function NewInvoice() {
 
         // Convert API result → dropdown format with phone & name
         const list = data.data.map(
-          (c: { phone: string; customer_name: string; address: string }) => ({
+          (c: { phone: string; customer_name: string; address: string ; cus_id: string}) => ({
             label: c.phone,
             value: c.phone,
             name: c.customer_name,
-            name_address: c.address, // store name for auto-fill
+            name_address: c.address, 
+            cus_id: c.cus_id,// store name for auto-fill
           })
         );
 
@@ -84,10 +86,12 @@ export default function NewInvoice() {
       if (selected) {
         setCustomerName(selected.name);
         setAddress(selected.name_address);
+        setcusid(selected.cus_id);
       }
     } else {
       setCustomerName("");
       setAddress("");
+      setcusid("");
     }
   }, [customerPhone]);
 
@@ -123,6 +127,7 @@ export default function NewInvoice() {
         customer_phone: customerPhone,
         customer_name: customerName,
         address: address,
+         cus_id: cus_id,
       };
 
       const response = await fetch("https://redchilli.lk/api/save_inv", {
@@ -137,7 +142,7 @@ export default function NewInvoice() {
       const data = await response.json();
 
       if (data.success) {
-        alert("Invoice saved successfully!");
+        alert("Invoice saved successfully!"); 
         router.back();
       } else {
         alert("Failed to save invoice: " + (data.message || ""));
@@ -163,6 +168,7 @@ export default function NewInvoice() {
         value={invoiceNo}
         editable={false}
       />
+      
 
       {/* CUSTOMER TYPE */}
       <View style={{ zIndex: 3000 }}>

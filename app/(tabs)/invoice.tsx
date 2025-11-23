@@ -102,6 +102,7 @@ export default function App({ navigation }: InvoiceListProps) {
     const handleSearchSubmit = () => {
         setSearchKey(currentSearchInput);
     };
+ 
 
     const handleClearSearch = () => {
         setSearchKey('');
@@ -119,6 +120,7 @@ export default function App({ navigation }: InvoiceListProps) {
 
     return (
         <SafeAreaView style={styles.container}>
+
             <Text style={styles.header}>Invoice List</Text>
 
             <View style={styles.searchRow}>
